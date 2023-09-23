@@ -216,7 +216,7 @@ class CSVDailyBarDataSource(object):
         """
         bid_ask_df = self.asset_bid_ask_frames[asset]
         try:
-            bid = bid_ask_df.iloc[bid_ask_df.index.get_loc(dt, method='pad')]['Bid']
+            bid = bid_ask_df.iloc[bid_ask_df.index.get_indexer([dt], method='pad')]['Bid'].iat[0]
         except KeyError:  # Before start date
             return np.NaN
         return bid
@@ -240,7 +240,7 @@ class CSVDailyBarDataSource(object):
         """
         bid_ask_df = self.asset_bid_ask_frames[asset]
         try:
-            ask = bid_ask_df.iloc[bid_ask_df.index.get_loc(dt, method='pad')]['Ask']
+            ask = bid_ask_df.iloc[bid_ask_df.index.get_indexer([dt], method='pad')]['Ask'].iat[0]
         except KeyError:  # Before start date
             return np.NaN
         return ask

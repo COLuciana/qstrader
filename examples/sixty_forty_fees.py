@@ -16,7 +16,7 @@ from qstrader.trading.backtest import BacktestTradingSession
 
 if __name__ == "__main__":
     start_dt = pd.Timestamp('2003-09-30 14:30:00', tz=pytz.UTC)
-    end_dt = pd.Timestamp('2019-12-31 23:59:00', tz=pytz.UTC)
+    end_dt = pd.Timestamp('2023-08-31 23:59:00', tz=pytz.UTC)
 
     # Construct the symbols and assets necessary for the backtest
     strategy_symbols = ['SPY', 'AGG']
@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     # To avoid loading all CSV files in the directory, set the
     # data source to load only those provided symbols
-    csv_dir = os.environ.get('QSTRADER_CSV_DATA_DIR', '.')
+    csv_dir = os.environ.get('QSTRADER_CSV_DATA_DIR', './data')
     data_source = CSVDailyBarDataSource(csv_dir, Equity, csv_symbols=strategy_symbols)
     data_handler = BacktestDataHandler(strategy_universe, data_sources=[data_source])
 

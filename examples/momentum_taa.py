@@ -171,7 +171,7 @@ if __name__ == "__main__":
 
     # To avoid loading all CSV files in the directory, set the
     # data source to load only those provided symbols
-    csv_dir = os.environ.get('QSTRADER_CSV_DATA_DIR', '.')
+    csv_dir = os.environ.get('QSTRADER_CSV_DATA_DIR', './data')
     strategy_data_source = CSVDailyBarDataSource(csv_dir, Equity, csv_symbols=strategy_symbols)
     strategy_data_handler = BacktestDataHandler(strategy_universe, data_sources=[strategy_data_source])
 

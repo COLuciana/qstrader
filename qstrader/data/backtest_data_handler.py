@@ -37,7 +37,8 @@ class BacktestDataHandler(object):
                 ask = ds.get_ask(dt, asset_symbol)
                 if not np.isnan(ask):
                     return ask
-            except Exception:
+            except Exception as e:
+                print(e)
                 ask = np.NaN
         return ask
 
