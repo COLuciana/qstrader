@@ -53,7 +53,7 @@ class SimulatedBroker(Broker):
         initial_funds=0.0,
         fee_model=ZeroFeeModel(),
         slippage_model=None,
-        market_impact_model=None
+        market_impact_model=None,
     ):
         self.start_dt = start_dt
         self.exchange = exchange
@@ -90,7 +90,7 @@ class SimulatedBroker(Broker):
         `str`
             The base currency string.
         """
-        if base_currency not in settings.SUPPORTED['CURRENCIES']:
+        if base_currency not in settings.SUPPORTED["CURRENCIES"]:
             raise ValueError(
                 "Currency '%s' is not supported by QSTrader. Could not "
                 "set the base currency in the SimulatedBroker "
@@ -102,7 +102,7 @@ class SimulatedBroker(Broker):
     def _set_initial_funds(self, initial_funds):
         """
         Check and set the initial funds for the broker
-        master account. Raise ValueError if the
+        main account. Raise ValueError if the
         amount is negative.
 
         Parameters
@@ -161,8 +161,7 @@ class SimulatedBroker(Broker):
             amount stored by broker in local currency.
         """
         cash_dict = dict(
-            (currency, 0.0)
-            for currency in settings.SUPPORTED['CURRENCIES']
+            (currency, 0.0) for currency in settings.SUPPORTED["CURRENCIES"]
         )
         if self.initial_funds > 0.0:
             cash_dict[self.base_currency] = self.initial_funds
@@ -193,37 +192,35 @@ class SimulatedBroker(Broker):
     def subscribe_funds_to_account(self, amount):
         """
         Subscribe an amount of cash in the base currency
-        to the broker master cash account.
+        to the broker main cash account.
 
         Parameters
         ----------
         amount : `float`
-            The amount of cash to subscribe to the master account.
+            The amount of cash to subscribe to the main account.
         """
         if amount < 0.0:
             raise ValueError(
-                "Cannot credit negative amount: "
-                "'%s' to the broker account." % amount
+                "Cannot credit negative amount: " "'%s' to the broker account." % amount
             )
         self.cash_balances[self.base_currency] += amount
         if settings.PRINT_EVENTS:
             print(
-                '(%s) - subscription: %0.2f subscribed to broker account "%s"' % (
-                    self.current_dt, amount, self.account_id
-                )
+                '(%s) - subscription: %0.2f subscribed to broker account "%s"'
+                % (self.current_dt, amount, self.account_id)
             )
 
     def withdraw_funds_from_account(self, amount):
         """
         Withdraws an amount of cash in the base currency
-        from the broker master cash account, assuming an
+        from the broker main cash account, assuming an
         amount equal to or more cash is present. If less
         cash is present, a ValueError is raised.
 
         Parameters
         ----------
         amount : `float`
-            The amount of cash to withdraw from the master account.
+            The amount of cash to withdraw from the main account.
         """
         if amount < 0:
             raise ValueError(
@@ -234,16 +231,14 @@ class SimulatedBroker(Broker):
             raise ValueError(
                 "Not enough cash in the broker account to "
                 "withdraw. %0.2f withdrawal request exceeds "
-                "current broker account cash balance of %0.2f." % (
-                    amount, self.cash_balances[self.base_currency]
-                )
+                "current broker account cash balance of %0.2f."
+                % (amount, self.cash_balances[self.base_currency])
             )
         self.cash_balances[self.base_currency] -= amount
         if settings.PRINT_EVENTS:
             print(
-                '(%s) - withdrawal: %0.2f withdrawn from broker account "%s"' % (
-                    self.current_dt, amount, self.account_id
-                )
+                '(%s) - withdrawal: %0.2f withdrawn from broker account "%s"'
+                % (self.current_dt, amount, self.account_id)
             )
 
     def get_account_cash_balance(self, currency=None):
@@ -263,7 +258,7 @@ class SimulatedBroker(Broker):
         if currency not in self.cash_balances.keys():
             raise ValueError(
                 "Currency of type '%s' is not found within the "
-                "broker cash master accounts. Could not retrieve "
+                "broker cash main accounts. Could not retrieve "
                 "cash balance." % currency
             )
         return self.cash_balances[currency]
@@ -279,14 +274,12 @@ class SimulatedBroker(Broker):
             The dictionary of each portfolio's total market value.
         """
         tmv_dict = {}
-        master_tmv = 0.0
+        main_tmv = 0.0
         for portfolio in self.portfolios.values():
-            pmv = self.get_portfolio_market_value(
-                portfolio.portfolio_id
-            )
+            pmv = self.get_portfolio_market_value(portfolio.portfolio_id)
             tmv_dict[portfolio.portfolio_id] = pmv
-            master_tmv += pmv
-        tmv_dict["master"] = master_tmv
+            main_tmv += pmv
+        tmv_dict["main"] = main_tmv
         return tmv_dict
 
     def get_account_total_equity(self):
@@ -300,14 +293,12 @@ class SimulatedBroker(Broker):
             The dictionary of each portfolio's total equity.
         """
         equity_dict = {}
-        master_equity = 0.0
+        main_equity = 0.0
         for portfolio in self.portfolios.values():
-            port_equity = self.get_portfolio_total_equity(
-                portfolio.portfolio_id
-            )
+            port_equity = self.get_portfolio_total_equity(portfolio.portfolio_id)
             equity_dict[portfolio.portfolio_id] = port_equity
-            master_equity += port_equity
-        equity_dict["master"] = master_equity
+            main_equity += port_equity
+        equity_dict["main"] = main_equity
         return equity_dict
 
     def create_portfolio(self, portfolio_id, name=None):
@@ -333,15 +324,14 @@ class SimulatedBroker(Broker):
                 self.current_dt,
                 currency=self.base_currency,
                 portfolio_id=portfolio_id_str,
-                name=name
+                name=name,
             )
             self.portfolios[portfolio_id_str] = p
             self.open_orders[portfolio_id_str] = queue.Queue()
             if settings.PRINT_EVENTS:
                 print(
-                    '(%s) - portfolio creation: Portfolio "%s" created at broker "%s"' % (
-                        self.current_dt, portfolio_id_str, self.account_id
-                    )
+                    '(%s) - portfolio creation: Portfolio "%s" created at broker "%s"'
+                    % (self.current_dt, portfolio_id_str, self.account_id)
                 )
 
     def list_all_portfolios(self):
@@ -357,8 +347,7 @@ class SimulatedBroker(Broker):
         if self.portfolios == {}:
             return []
         return sorted(
-            list(self.portfolios.values()),
-            key=lambda port: port.portfolio_id
+            list(self.portfolios.values()), key=lambda port: port.portfolio_id
         )
 
     def subscribe_funds_to_portfolio(self, portfolio_id, amount):
@@ -376,8 +365,7 @@ class SimulatedBroker(Broker):
         """
         if amount < 0.0:
             raise ValueError(
-                "Cannot add negative amount: "
-                "%0.2f to a portfolio account." % amount
+                "Cannot add negative amount: " "%0.2f to a portfolio account." % amount
             )
         if portfolio_id not in self.portfolios.keys():
             raise KeyError(
@@ -386,20 +374,17 @@ class SimulatedBroker(Broker):
             )
         if amount > self.cash_balances[self.base_currency]:
             raise ValueError(
-                "Not enough cash in the broker master account to "
+                "Not enough cash in the broker main account to "
                 "fund portfolio '%s'. %0.2f subscription amount exceeds "
-                "current broker account cash balance of %0.2f." % (
-                    portfolio_id, amount,
-                    self.cash_balances[self.base_currency]
-                )
+                "current broker account cash balance of %0.2f."
+                % (portfolio_id, amount, self.cash_balances[self.base_currency])
             )
         self.portfolios[portfolio_id].subscribe_funds(self.current_dt, amount)
         self.cash_balances[self.base_currency] -= amount
         if settings.PRINT_EVENTS:
             print(
-                '(%s) - subscription: %0.2f subscribed to portfolio "%s"' % (
-                    self.current_dt, amount, portfolio_id
-                )
+                '(%s) - subscription: %0.2f subscribed to portfolio "%s"'
+                % (self.current_dt, amount, portfolio_id)
             )
 
     def withdraw_funds_from_portfolio(self, portfolio_id, amount):
@@ -430,22 +415,17 @@ class SimulatedBroker(Broker):
         if amount > self.portfolios[portfolio_id].cash:
             raise ValueError(
                 "Not enough cash in portfolio '%s' to withdraw "
-                "into brokerage master account. Withdrawal "
+                "into brokerage main account. Withdrawal "
                 "amount %0.2f exceeds current portfolio cash "
-                "balance of %0.2f." % (
-                    portfolio_id, amount,
-                    self.portfolios[portfolio_id].cash
-                )
+                "balance of %0.2f."
+                % (portfolio_id, amount, self.portfolios[portfolio_id].cash)
             )
-        self.portfolios[portfolio_id].withdraw_funds(
-            self.current_dt, amount
-        )
+        self.portfolios[portfolio_id].withdraw_funds(self.current_dt, amount)
         self.cash_balances[self.base_currency] += amount
         if settings.PRINT_EVENTS:
             print(
-                '(%s) - withdrawal: %0.2f withdrawn from portfolio "%s"' % (
-                    self.current_dt, amount, portfolio_id
-                )
+                '(%s) - withdrawal: %0.2f withdrawn from portfolio "%s"'
+                % (self.current_dt, amount, portfolio_id)
             )
 
     def get_portfolio_cash_balance(self, portfolio_id):
@@ -560,13 +540,9 @@ class SimulatedBroker(Broker):
         price_err_msg = (
             "Could not obtain a latest market price for "
             "Asset with ticker symbol '%s'. Order with ID '%s' was "
-            "not executed." % (
-                order.asset, order.order_id
-            )
+            "not executed." % (order.asset, order.order_id)
         )
-        bid_ask = self.data_handler.get_asset_latest_bid_ask_price(
-            dt, order.asset
-        )
+        bid_ask = self.data_handler.get_asset_latest_bid_ask_price(dt, order.asset)
         if bid_ask == (np.NaN, np.NaN):
             raise ValueError(price_err_msg)
 
@@ -597,17 +573,26 @@ class SimulatedBroker(Broker):
 
         # Create a transaction entity and update the portfolio
         txn = Transaction(
-            order.asset, scaled_quantity, self.current_dt,
-            price, order.order_id, commission=total_commission
+            order.asset,
+            scaled_quantity,
+            self.current_dt,
+            price,
+            order.order_id,
+            commission=total_commission,
         )
         self.portfolios[portfolio_id].transact_asset(txn)
         if settings.PRINT_EVENTS:
             print(
                 "(%s) - executed order: %s, qty: %s, price: %0.2f, "
-                "consideration: %0.2f, commission: %0.2f, total: %0.2f" % (
-                    self.current_dt, order.asset, scaled_quantity, price,
-                    consideration, total_commission,
-                    consideration + total_commission
+                "consideration: %0.2f, commission: %0.2f, total: %0.2f"
+                % (
+                    self.current_dt,
+                    order.asset,
+                    scaled_quantity,
+                    price,
+                    consideration,
+                    total_commission,
+                    consideration + total_commission,
                 )
             )
 
@@ -635,16 +620,13 @@ class SimulatedBroker(Broker):
         if portfolio_id not in self.portfolios.keys():
             raise KeyError(
                 "Portfolio with ID '%s' does not exist. Order with "
-                "ID '%s' was not executed." % (
-                    portfolio_id, order.order_id
-                )
+                "ID '%s' was not executed." % (portfolio_id, order.order_id)
             )
         self.open_orders[portfolio_id].put(order)
         if settings.PRINT_EVENTS:
             print(
-                "(%s) - submitted order: %s, qty: %s" % (
-                    self.current_dt, order.asset, order.quantity
-                )
+                "(%s) - submitted order: %s, qty: %s"
+                % (self.current_dt, order.asset, order.quantity)
             )
 
     def update(self, dt):
@@ -661,9 +643,7 @@ class SimulatedBroker(Broker):
         # Update portfolio asset values
         for portfolio in self.portfolios:
             for asset in self.portfolios[portfolio].pos_handler.positions:
-                mid_price = self.data_handler.get_asset_latest_mid_price(
-                    dt, asset
-                )
+                mid_price = self.data_handler.get_asset_latest_mid_price(dt, asset)
                 self.portfolios[portfolio].update_market_value_of_asset(
                     asset, mid_price, self.current_dt
                 )
@@ -673,9 +653,7 @@ class SimulatedBroker(Broker):
             orders = []
             for portfolio in self.portfolios:
                 while not self.open_orders[portfolio].empty():
-                    orders.append(
-                        (portfolio, self.open_orders[portfolio].get())
-                    )
+                    orders.append((portfolio, self.open_orders[portfolio].get()))
 
             sorted_orders = sorted(orders, key=lambda x: x[1].direction)
             for portfolio, order in sorted_orders:

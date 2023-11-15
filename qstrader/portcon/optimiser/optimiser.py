@@ -21,6 +21,4 @@ class PortfolioOptimiser(object):
 
     @abstractmethod
     def __call__(self, dt):
-        raise NotImplementedError(
-            "Should implement __call__()"
-        )
+        raise NotImplementedError("Should implement __call__()")

@@ -5,9 +5,7 @@ import pytz
 from qstrader.system.rebalance.buy_and_hold import BuyAndHoldRebalance
 
 
-@pytest.mark.parametrize(
-    "start_dt", [('2020-01-01'), ('2020-02-02')]
-)
+@pytest.mark.parametrize("start_dt", [("2020-01-01"), ("2020-02-02")])
 def test_buy_and_hold_rebalance(start_dt):
     """
     Checks that the buy and hold rebalance sets the
