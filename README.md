@@ -1,4 +1,6 @@
-# QSTrader
+# QSTrader Reloaded - Fork of QSTrader
+
+**NOTE:** This is a fork of the original [QSTrader](https://github.com/mhallsmoore/qstrader) library. It has been updated for compatibility with Python 3.11, 3.12, and Pandas 2.0. The README and documentation are yet to be updated to reflect these changes.
 
 [![ci](https://github.com/COLuciana/qstrader-reloaded/actions/workflows/ci.yml/badge.svg)](https://github.com/COLuciana/qstrader-reloaded/actions/workflows/ci.yml)
 
